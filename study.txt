@@ -140,3 +140,50 @@ export default{
             toggleTodo,removeTodo
         }
         }
+
+*Computed
+import {computed} from 'vue';
+let count = ref(1);
+let doubleCount = computed(() => {
+  return count.value *2;
+});
+
+count의 값의 변경을 감지하여 doubleCount호출시 자동으로 변경된
+count값의 *2를 하여 반환한다. 
+
+<h3>doubleCountComputed : {{ doubleCountComputed }}</h3>
+<h3>doubleCountMethod : {{ doubleCountMethod() }}</h3>
+
+const doubleCountMethod = () =>{
+      return count.value *2;
+    }
+
+computed와 method의 차이점
+computed는 호출하는것을 보면 알수있듯이 값을 리턴한다. ()를안쓴다는 뜻
+computed는 파라미터를 받을 수없다
+참조변수가 변경될때 실행한다
+computed는 값을 캐쉬한다. (즉 여러번사용할떄 함수는 사용할떄마다 실행되지만 computed는 한번 실행되면 해당 값을 캐쉬하기때문에 재실행되지 않는다.)
+
+TOdoDb에저장하기
+npm으로 가상 json뭐시기 설치하지 restful하게 사용할 수있는 DB를 제공해줬다
+
+async/await
+
+async 키워드를 함수 압에 사용하면 해당 함수는 비동기가된다
+await 를 사용하면 axios요청의 응답을 기다린다는 뜻
+ const addTodo = async (object) => {
+      //데이터베이스에 todo저장 post request이용
+      const res = await axios.post('http://localhost:3000/todos',{
+        subject: object.subject,
+        completed: object.completed
+      })
+        
+    }
+
+    *axios를 이용해 데이터 입력 및 삭제 구현
+    *axios를 이용해 데이터 변경
+    --> put,patch 메소드를 사용할수 있는데 
+    put: 데이터 전체를 변경할떄
+    patch : 데이터 일부분만 변경할때 
+    사용된다고 한다. 
+

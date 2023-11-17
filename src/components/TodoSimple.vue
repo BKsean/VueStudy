@@ -1,5 +1,4 @@
 <template>
-  <div class="container">
   <h2>해야 할일</h2>
   <form @submit.prevent="onSubmit" class="d-flex">
     <div class="flex-grow-1 mr-2">
@@ -10,8 +9,6 @@
     </div>
     <div v-show="emptySubject">해야할 일을 입력하지 않았습니다.</div> 
   </form>
-
-</div>
 </template>
 
 <script>
