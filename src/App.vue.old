@@ -1,0 +1,79 @@
+<template>
+  <img alt="Vue logo" src="./assets/logo.png">
+  <div :class="nameClass">{{name}}</div>
+  <div class="name">{{id}}</div>
+  <input type="text" v-bind:value="name">
+
+  <!-- 클릭이벤트를 걸었다 -->
+  <button class="btn btn-primary"
+      v-on:click="updateName"  
+  >click</button>  
+  
+  <div>{{greetingPerson}}</div>
+  <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
+</template>
+
+<script>
+import { ref,reactive } from 'vue';
+export default {
+  setup() {
+    let name = ref('sean2');
+    const nameClass = ref('name');
+    const id = reactive({
+      index:1
+    })
+   //함수 생성
+  // function greeting(name){
+  //   return 'hello, ' + name;
+  // }
+  // const greetingPerson = greeting(name);
+
+  //name변수는 바뀌었는데 정작 Template의 변수가 변경되지 않았다
+  // const updateName = () => {
+  //   console.log('hello world');
+  //   name = 'sean';  
+  // }
+
+// 'ref'를 사용하여 Template 변수를 변경할 수 있다. 
+   const updateName = () => {
+    console.log('hello world');
+    name.value = 'sean';  
+    id.index = 2;
+    nameClass.value = 'test';
+  }
+
+    return {
+      name,updateName,id,nameClass
+    }
+  },
+}
+</script>
+
+<style>
+.name{
+  color: rebeccapurple;
+}
+</style>
+<!--
+<script>
+import HelloWorld from './components/HelloWorld.vue'
+
+export default {
+  name: 'App',
+  components: {
+    HelloWorld
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+-->

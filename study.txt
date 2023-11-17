@@ -1,0 +1,142 @@
+1. node 설치
+2. npm으로 Vue설치
+3. npm으로 vue cli 설치
+4. 원하는 프로젝트에서 vue cli로 create vue 프로젝트명으로 프로젝트 생성
+5. vscode에서 해당 폴더 불러오고 vetur패키지? 설치
+6. package.json --> 사용하기위한 dependency등록   **패키지 추가 등록시 리로드는 어떻게?
+7. index.html --> 빌드하면 나중에 스크립트가 자동으로 들어간다는데?
+8. main.js 
+
+* TypeScript와같이 사용하는 방법
+* 해당 js및 html을 MVC프로젝트에 적용방법
+* thymleaf? 와 같이 사용하는 방법
+
+======================================================================================================
+
+*기본적인 구조
+<template>  //html코드값 들어감
+    <div></div>
+</template>
+
+
+<script></script>
+
+<style></style>
+
+*함수생성
+
+*이벤트 매핑
+
+*이벤트로 변수 변경
+*ref와 reactive
+ ref와 reactive의 차이점
+타입 제한
+ref에서는 String, Number, Object 등 어떠한 타입에서도 사용할 수 있습니다.
+반면 reactive에서는 Object, array, Map, Set과 같은 타입에서만 사용할 수 있습니다.
+
+접근 방식
+ref에서는 .value property를 붙여 접근할 수 있습니다. <templete>에서 변수를 명시할 때에는 붙일 필요가 없습니다.
+reactive에서는 .value를 붙일 필요가 없이 <templete>에서 사용하는 자바스크립트 문법처럼 사용하시면 됩니다.
+
+*데이터 바인딩
+v-bind:class --> :class 로사용가능
+v-on:click --> @click 로 사용가능
+v-model ---> 양방향으로 데이터 매핑 가능 @input 으로 value값 변경 이벤트를 바인딩할 필요가 없음
+v-for="a in todos" v-bind:key="a.id"
+
+v-show --> 아닌경우에 DOM에 존재하지만 display:none상태임
+<div v-show="toggle">true</div>
+<div v-show="!toggle">flase</div>
+
+v-if  --> 아닌경우에 DOM에서 없어짐
+<div v-if="toggle">true</div>
+<div v-else>false</div>
+
+*체크박스 바인딩
+<input class="form-check-input" type="checkbox" v-model="a.completed">
+        <label
+          class="form-check-label"
+        >{{ a.subject }}</label>
+
+*스타일,class바인딩
+<label
+          class="form-check-label" :style="a.completed ? complete : {}"
+        :class="{active : a.completed}">{{ a.subject }}</label>
+
+const complete = {
+      textDecoration: 'line-through',
+      color: 'gray'
+    }
+
+<style>
+.active{
+  font-size: 15px;
+  color: rgb(19, 19, 212);
+}
+</style>
+
+*해야할일 삭제
+<button class="btn btn-danger btn-sm" @click="removeTodo(a.id)">삭제</button>
+const removeTodo = (id)=>{
+    todos.value.pop(id);
+  }
+
+  *컴포넌트 분리 
+  새로운 .VUE파일을 만들어서 코드의 복잡성및 유지보수성을 위해 컴포넌트를 분리한다. 
+  import TodoSimpleForm from './components/TodoSimple.vue';
+export default {
+  components:{
+    TodoSimpleForm,
+},
+
+*분리된 컴포넌트를 부모에서 사용
+<TodoSimpleForm/>
+
+  *컴포넌트로 분리시 부모 컴포넌트에 데이터 전달 방법
+  setup(props,context){ 으로 setup파라미터 설정
+   context.emit('add-todo',{
+             id: Date.now(),
+             subject: todo.value,
+             completed:false
+             });
+으로 데이터 전달 여기선 객체 
+부모 컴포넌트에서 자식컴포넌트 사용부분에섯 받는 데이터 설정
+<TodoSimpleForm @add-todo="addTodo*이건이벤트 함수" />
+
+
+*부모컴포넌트에서 자식컴포넌트로 데이터 전송
+컴포넌트 분리후 부모에서 자식컴포넌트 사용하는 부분에 다음과 같이 데이터 전송
+<TodoList :todos<-이건 전달되는 변수="todos"/> 
+
+자식 컴포넌트에서 데이터 바는 방법
+export default{
+        props: ['todos']
+        // props: {  이것과 같이 타입,필수여부등을 설정가능
+        //     todos:{
+        //         type: Array,
+        //         required: true
+        //     }
+        // }
+    }
+
+    &&주의할점 props로 전달되는 데이터는 one way data flow다 
+    즉 자식에서 변경해봤자 데이터가 변경되지 않는다. 변경하려면
+    부모 컴포넌트에서 변경할것
+
+    emits옵션? 자식 컴포넌트는 하나의 html태크로 감싸줘야한다?
+    --> 그대로 되지만 emits: ['toggle-todo','delete-todo']로 해당 컴포넌트에서 사용중인 emit이름들을 정리하면 된다.
+    
+    setup(props,{emit--> context대신 emit만 꺼내와서 사용가능}){
+            const toggleTodo=(index) =>{
+                emit('toggle-todo',index); //부모 컴포넌트에 toggle-todo라는 이름으로 index데이터 전달
+            }
+
+            const removeTodo=(id) =>{
+                emit('delete-todo',id); //부모 컴포넌트에 toggle-todo라는 이름으로 index데이터 전달
+            }
+            
+            
+            return{
+            toggleTodo,removeTodo
+        }
+        }
