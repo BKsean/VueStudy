@@ -187,3 +187,65 @@ await 를 사용하면 axios요청의 응답을 기다린다는 뜻
     patch : 데이터 일부분만 변경할때 
     사용된다고 한다. 
 
+
+*Pagination
+한페이지당 보여줄 게시물개수, 전체 개시물개수 만있으면
+페이지 네이션 컨트롤 가능 
+추가로 5개 페이지만 표시하고 싶다 + 5번째 페이지 이후 넥스트페이지 선택시 6,7,8,9,10 으로 표시되도록 하는것
+추가로 마지막 페이지 이동 등등 추가 필요
+
+*watfch effect
+import { ref,watchEffect} from 'vue';
+    watchEffect(()=>{
+      console.log(numberOfPages.value);
+    })
+
+    뷰에서 관리되는 변수가 변경되면 감지해서 자동으로 실행하는 함수
+    ref,reactive,props등등 다 적용됨
+
+  *watch
+  watchEffect와 비슷하다
+    watch(currentPage(관리할 변수),(currentPage,prev(변경되기전 변수값)) =>{
+      console.log(currentPage,prev);
+    })
+
+    reactive의 경우 객체이기 때문에 객체안에 특정값으로 watch가능
+    watch(()=>a.b,(current,prev)=>{
+      ....
+    })
+    여러값 watch
+    watch(()=>[a.b,a.c],(current,prev)=>{
+      .... 결과값도 배열로 나온다.
+    })
+
+    검색부분에 watch를 적용하여 키보드 입력시 변경 감지를 통해 getTodos함수 실행으로 검색되게 수정
+    settimeout 및 clearTimeout으로 지연검색 하게 변경
+    let timeout= null;
+      watch(searchText,async()=>{ 
+        clearTimeout(timeout);
+        
+        timeout = setTimeout(()=>{
+          getTodos(1);          
+        },1500)
+        
+      })
+
+*vue router
+vue rounter설치 필요 npm install vuerouter@3 인가?
+이우 router폴더 생성후 index.js생성
+거기서 router설정 정보 설정 
+url별 보여줄 component생성 이경우 pages폴더 하위 
+
+그리고 App.vue에서 
+  <RouterView/>
+  <router-view/>
+  둘중 아무거나 사용하면 해당 /url에 생성한 component가 적용됨
+
+    import TodoSimpleForm from './components/TodoSimple.vue';
+    @의미는 src경로를 의미한대
+
+*router-link
+vuejs는 로딩시 모든소스를 가져와 설정한다 이후 데이터만 가져와서 template에 끼워 넣는식으로 동작하는데
+a href같은 이동시 로딩이 일어나면서 모든 데이터를 다시 가져오는 비효율적인 일이 발생한다.
+--> a태그를 router-link로 변경하면 페이지 로딩없이 이동 가능하게 된다 
+<RouterLink class="nav-link" to="/todos">Todos</RouterLink>
