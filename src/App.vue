@@ -7,7 +7,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
      
         <li class="nav-item">
-          <RouterLink class="nav-link" to="/todos">Todos</RouterLink>
+          <RouterLink class="nav-link" :to="{name: 'Todos'}">Todos</RouterLink>
         </li>
      
       </ul>
@@ -18,7 +18,10 @@
     </div>
   </div>
 </nav>
+<div class="container">
   <RouterView/>
+</div>
+  
 </template>
 
 <script>

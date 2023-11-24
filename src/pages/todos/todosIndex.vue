@@ -1,11 +1,12 @@
 <template>
-    <RouterView/>
-    <router-view/>
-  <div class="container">
+    
+  <div>
   
     <input class="form-control" type="text" v-model="searchText">
-      
-    <TodoSimpleForm @add-todo="addTodo" />
+
+    <button class="btn btn-primary" @click="moveToCreate">create todo</button>
+
+    
     <div v-if="!todos.length">추가된 Todo가 없습니다.</div>
     <TodoList :todos="todos" @toggle-todo="toggleTodo" @delete-todo="removeTodo"/>
     <div v-if="errorMesage.length > 0">{{ errorMesage }}</div>
@@ -34,14 +35,15 @@
   <script>
   // import e from 'express';
   import { ref,watch} from 'vue';
-  import TodoSimpleForm from '@/components/TodoSimple.vue';
+  
   import TodoList from '@/components/TodoList.vue'
   import { computed } from '@vue/reactivity';
   import axios from 'axios';
+  import { useRouter } from 'vue-router';
   
   export default {
     components:{
-      TodoSimpleForm,
+      
       TodoList,
   },
     setup() {
@@ -55,6 +57,7 @@
       const numberOfPages = computed(()=>{
         return Math.ceil(numberOfTodos.value/limit);
       })
+      const router = useRouter();
   
       // watchEffect(()=>{
       //   console.log(numberOfPages.value);
@@ -107,6 +110,7 @@
       }
   
       const removeTodo = async (id)=>{
+        console.log(id);
       try {
         await axios.delete("http://localhost:3000/todos/"+id);
          //todos.value.splice(index,1);
@@ -123,20 +127,20 @@
     //   console.log(e.target.value);
     //   name.value = e.target.value;
     // }
-      const toggleTodo = async (index)=>{
+      const toggleTodo = async (index,checked)=>{
         const id = todos.value[index].id;
-        const completedValue = todos.value[index].completed;
+        console.log(checked);
+        //const completedValue = todos.value[index].completed;
         try {
           await axios.patch('http://localhost:3000/todos/'+id,{
-            completed: !completedValue
+            completed: checked
           });
-          todos.value[index].completed = !todos.value[index].completed;  
+          todos.value[index].completed = checked;  
         } catch (error) {
           console.log(error);
           errorMesage.value = error.errorMesage;
         }
-        
-        
+
       }
   
       // const searchTodo = computed(()=>{
@@ -159,9 +163,14 @@
           
         })
   
+        const moveToCreate = () =>{
+          router.push({
+            name : 'TodoCreate'
+          })
+        }
     return {
       todos,complete,addTodo,removeTodo,toggleTodo,searchText
-     ,errorMesage,numberOfPages,currentPage,maxPage,getTodos
+     ,errorMesage,numberOfPages,currentPage,maxPage,getTodos,moveToCreate
    
      }
     },

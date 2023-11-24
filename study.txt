@@ -249,3 +249,155 @@ vuejs는 로딩시 모든소스를 가져와 설정한다 이후 데이터만 �
 a href같은 이동시 로딩이 일어나면서 모든 데이터를 다시 가져오는 비효율적인 일이 발생한다.
 --> a태그를 router-link로 변경하면 페이지 로딩없이 이동 가능하게 된다 
 <RouterLink class="nav-link" to="/todos">Todos</RouterLink>
+
+
+라우트에서 변수를 받아서 사용하는 방법
+      {
+            path:'/todos/:id',
+            name:'todo',
+            component:Todo
+        },
+
+import { useRoute } from 'vue-router';
+    export default{
+        setup(){
+            const route = useRoute();
+            console.log(route.params);
+        }
+    }
+    
+router페이지 이동
+import { useRouter } from 'vue-router';
+const router = useRouter();
+      const moveToPage = (id) =>{
+              console.log(id);
+              router.push('/todos/'+id);
+            }
+
+router 이름으로 이동 하는 방법
+<RouterLink class="nav-link" :to="{name: 'Todos'}">Todos</RouterLink>
+<RouterLink class="navbar-brand" to="/">Home</RouterLink>
+
+*이벤트 버블링
+자식요소의 이벤트를 실행시 이벤트 버블링으로 인해 최상단 부모의 이벤트까지 실행되는 것
+<button class="btn btn-danger btn-sm" @click.stop="removeTodo(a.id)">삭제</button>
+@click.stop ---> 상위로 이벤트 전파 막는 요소
+
+@change보다 @click이 먼저 실행되는것 같다 
+따라서 @change.stop해도 상위 @click은 실행된다. 따라서 @change에서 별도로 @click.stop을 추가하면 막을수있다. 
+
+*객체 복사 및 todos 상세보기 컴포넌트및 수정 저장 기능 추가
+변수1 = res.data;
+변수2 = res.data;
+변수1수정시 변수2도 변경됨
+변수1 = {...res.data};
+변수2 = {...res.data};
+lodash로 객체 비교 해봄
+
+*Toast컴포넌트
+
+*컴포넌트 라이프사이클 
+
+
+*TODO create page만들기
+ import TodoList from '@/components/TodoList.vue'
+  import {TodoList} from '@/components/TodoList.vue'
+  뭐가 맞게? 이것때문에 30분 소비함
+  컴포넌트 불리하고 공용으로 사용할 컴포넌트로 만들고 !!!
+  props로 부모에서 불러오는 컴포넌트의 보여줄 컨텐츠 구분
+
+
+  *scoped style
+  <style scoped> //scoped 키워드는 해당 컴포넌트만 적용되는 스타일 적용
+    .text-red{
+        color:red;
+    }
+</style>
+없으면 전역적으로 스타일 적용 가능 
+
+
+*삭제시 modal창을 띄워 사용자 확인후 삭제로직하는 기능 추가
+
+*Teleport모달창
+  <teleport to='#sean' >
+  <div>111111111</div>
+  </teleport>
+
+  *slot
+  모달사용시 text같은 경우에는 부모컴포넌트에서 props에서 받아서 사용할수있지만
+  태그나 로직은 받아서 사용할수없다. 이럴떄 사용하는게 slot
+  List.vue와 TodoList.vue의 관계를 살펴보면 template slot사용 활용을 확인할 수 있다. 
+  리스트를 공통 컴포넌트로 만들기 위해 List.vue로 뺴고 
+   <div v-for="(item,index) in items" :key="item.id" class="card mt-2">
+    <slot name="listTemplate" :item(이이름으로)="item(이테이터전송)" :index="index"></slot>  
+  </div>
+
+  TodoList.vue에서는
+   <List
+    :items="todos"  //리스트 목록을 List.vue에서 보여주기위해
+  >
+  <template #listTemplate="slotProps">  //slotProps는 List.vue slot에서 보낸 데이터를 받는 부분이다. slotProps.item , slotProps.index처럼 사용 가능하다
+    리스트 렌더링 로직
+  </template>
+  </List>
+
+  * 컴포넌트에 v-model사용하기 
+  기존 v-model을 사용하는 부분을 컴포넌트로 분리할때 변수를 내리고 올리고 하는 번거러움을 대처
+  TodoForm.vue
+  <Input label="" :error="subjectError"              
+                v-model:subject="todo.subject"
+                />
+
+ input.vue
+
+ props : {
+        subject : {
+            type : String,
+            requirement : true
+        }
+    },
+
+..
+..
+emit('update:subject',e.target.value);
+v-model:subject="todo.subject"  v-model:자식에서 받는 변수명="실제 넘길 데이터"
+'update:subject'  'update:받은 변수명'
+
+*함수 export import 예시
+함수 export시 선언 방법에 따라 import방법도 다르다 
+export const useCount = () => {
+
+}
+import { useCount }
+
+export default useCount
+import useCount
+
+*toRefs 
+reactive 개체 A를 export할때  const state = reactive({count:0})
+import한곳에서 구조분해로 내부 프로퍼티가 count가 있을경우 
+{count} 로 받아와서 해당 값을 변경하는 로직을 따른다면
+A는 reactive하지만
+구조분해로 가져온 count값은 reactive가 아니기 때문에 변경되지 않는다. 
+이럴떄 export시 toRefs(status)로 감싸주면 안에 값들이 ref변수로 변경된다. 
+
+*axios baseUrl
+
+axios baseUrl를 사용해서 기본적인 url을 설정할 수 있다. 
+
+*vuex
+컴포넌트 분리를이용해 몇단계 위의 컴포넌트로 이동한다면 
+즉 emit을 이용해 최상단까지 컴포넌트까지 올리기기 위해서 n단계의 emit이 필요하다면
+vuex를 사용한다고 한다.
+vuex는 state를 저장하는 공간을 두로 여러 컴포넌트에서 depth와 상관없이 접근 하도록 한다.
+
+vuex설치
+
+npm install vuex@next --save
+이후
+store폴더 하위 index.js파일에 vuex설정하고 
+
+main.js에서 router처럼 사용하게 설정
+import router from './router'; //index.js생략가능하데
+import store from '@/store/index'
+createApp(App).use(store).use(router).mount('#app')

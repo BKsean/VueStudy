@@ -1,18 +1,30 @@
 import { createRouter,createWebHistory } from "vue-router";
-import Home from '../pages/index.vue'
-import Todos from '../pages/todos/index.vue'
+import Home from '../pages/mainIndex.vue'
+import Todos from '../pages/todos/todosIndex.vue'
+import Todo from '../pages/todos/_id.vue'
+import TodoCreate from '@/pages/todos/create/createIndex.vue'
 const router = createRouter({
     history:createWebHistory(), //다른종류및 의미는 api문서 확인
     routes:[
         {
             path:'/',
-            name:'home',
+            name:'Home',
             component:Home
         },
         {
             path:'/todos',
-            name:'todos',
+            name:'Todos',
             component:Todos
+        },
+        {
+            path:'/todo/create',
+            name:'TodoCreate',
+            component:TodoCreate
+        },
+        {
+            path:'/todos/:id',
+            name:'Todo',
+            component:Todo
         },
         // {
         //     path:'/todos/create',

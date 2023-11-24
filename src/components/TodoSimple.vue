@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {ref} from 'vue';
+import {ref, } from 'vue';
 export default{
     emits:['add-todo'],
     setup(props,context){
@@ -29,15 +29,13 @@ export default{
              completed:false
              });
             emptySubject.value = false;
-            // todos.value.push({
-            // id: Date.now(),
-            // subject: todo.value,
-            // completed:false
-            // })
+            
             todo.value='';
         }
     
-  }
+      }
+
+      
 
         return{
             onSubmit,todo,emptySubject
