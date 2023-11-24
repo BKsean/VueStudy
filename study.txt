@@ -132,7 +132,7 @@ export default{
             }
 
             const removeTodo=(id) =>{
-                emit('delete-todo',id); //부모 컴포넌트에 toggle-todo라는 이름으로 index데이터 전달
+                emit('delete-todo',id); //부모 컴포넌트에 delete-todo라는 이름으로 id데이터 전달
             }
             
             
@@ -191,6 +191,7 @@ await 를 사용하면 axios요청의 응답을 기다린다는 뜻
 *Pagination
 한페이지당 보여줄 게시물개수, 전체 개시물개수 만있으면
 페이지 네이션 컨트롤 가능 
+TODO
 추가로 5개 페이지만 표시하고 싶다 + 5번째 페이지 이후 넥스트페이지 선택시 6,7,8,9,10 으로 표시되도록 하는것
 추가로 마지막 페이지 이동 등등 추가 필요
 
@@ -234,7 +235,7 @@ import { ref,watchEffect} from 'vue';
 vue rounter설치 필요 npm install vuerouter@3 인가?
 이우 router폴더 생성후 index.js생성
 거기서 router설정 정보 설정 
-url별 보여줄 component생성 이경우 pages폴더 하위 
+url별 보여줄 component생성 이경우 pages폴더 하위에 경로별 폴더및 파일을 생성한다.
 
 그리고 App.vue에서 
   <RouterView/>
@@ -274,7 +275,7 @@ const router = useRouter();
               router.push('/todos/'+id);
             }
 
-router 이름으로 이동 하는 방법
+router 이름으로 이동 하는 방법 --> router.push에서도 이름으로 이동가능하다.
 <RouterLink class="nav-link" :to="{name: 'Todos'}">Todos</RouterLink>
 <RouterLink class="navbar-brand" to="/">Home</RouterLink>
 

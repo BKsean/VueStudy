@@ -1,0 +1,12 @@
+스타일,class바인딩
+<label
+          class="form-check-label" :style="a.completed ? complete : {}"
+        :class="{active : a.completed}">{{ a.subject }}</label>
+클래스를 바인딩하는 여러가지 방법을 알아보자
+
+watch 사용법을 다시한번 확인
+
+ㅐsetTimeout함수 clearTimeout방법
+
+*컴포넌트 라이프사이클 
+onMount beforeMount등 할때 특정 state만 동작하도록 설정가능?
