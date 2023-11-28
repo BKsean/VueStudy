@@ -11,22 +11,31 @@
         </li>
      
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
     </div>
   </div>
 </nav>
 <div class="container">
   <RouterView/>
 </div>
-  
+
+<Toast />
+
 </template>
 
 <script>
-
+import Toast from '@/components/Toast.vue'
+import { useStore } from 'vuex';
 export default {
+  components : {
+    Toast,
+  }
+  ,
+  setup(){
+    const store = useStore();
+    store.dispatch('toast/triggerToastResult',{message:'testset',type:'danger'});
+    console.log(store.state);
+    
+  }
   
 }
 </script>
@@ -37,6 +46,7 @@ export default {
   font-size: 20px;
   color: rgb(19, 19, 212);
 }
+
 </style>
 <!--
 <script>

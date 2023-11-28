@@ -1,44 +1,26 @@
-import { ref,onUnmounted } from "vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
 export const useToast = () =>{
-
-    const saveResult= ref(false);
-    const savedMessage = ref('');
-    const timeout = ref(null);
-    const type = ref('success');
-
-    const triggerToastResult = (status) => {
-        saveResult.value = true;
-        if(status == 200 || status == 201){        
-            savedMessage.value = 'save successed';
-            type.value = 'success';
-        }else{
-            savedMessage.value = 'save fail';
-            type.value = 'danger';
-        }
-        timeout.value = setTimeout(() => {
-                    saveResult.value = false;
-                    savedMessage.value = '';
-                    console.log('timeoutFunction')
-                }, 2000);
+const store = useStore();
+    //const saveResult= computed(() => store.state.toast.saveResult);
+    //const savedMessage =computed(() => store.state.savedMessage);
+    //const savedMessage =computed(() => store.getters['toast/toastMessageWithSmile']);
+    //const timeout = computed(() => store.state.timeout);
+    //const type = computed(() => store.state.toast.type);
+    
+    const toasts = computed(() => store.state.toast.toasts);
+    const triggerToastResult = (resStatus) => {
+        store.dispatch('toast/triggerToastResult',resStatus);
     }
 
-    onUnmounted(()=>{
-        console.log('onUnmounted');
-        clearTimeout(timeout.value);
-    })
 
     const triggerToastError = (message) =>{
-        console.log("2222");
-        saveResult.value = true;
-        savedMessage.value = message;
-        type.value = 'danger';
+        store.dispatch('toast/triggerToastError',message);
     }
 
     return {
-        saveResult,
-        savedMessage,
-        type,
         triggerToastResult,
-        triggerToastError
+        triggerToastError,
+        toasts
     }
 }

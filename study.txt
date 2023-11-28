@@ -330,7 +330,7 @@ lodash로 객체 비교 해봄
   List.vue와 TodoList.vue의 관계를 살펴보면 template slot사용 활용을 확인할 수 있다. 
   리스트를 공통 컴포넌트로 만들기 위해 List.vue로 뺴고 
    <div v-for="(item,index) in items" :key="item.id" class="card mt-2">
-    <slot name="listTemplate" :item(이이름으로)="item(이테이터전송)" :index="index"></slot>  
+    <slot name="listTemplate" :item(이이름으로)="item(이데이터전송)" :index="index"></slot>  
   </div>
 
   TodoList.vue에서는
@@ -378,7 +378,7 @@ import useCount
 reactive 개체 A를 export할때  const state = reactive({count:0})
 import한곳에서 구조분해로 내부 프로퍼티가 count가 있을경우 
 {count} 로 받아와서 해당 값을 변경하는 로직을 따른다면
-A는 reactive하지만
+객체 A는 reactive하지만
 구조분해로 가져온 count값은 reactive가 아니기 때문에 변경되지 않는다. 
 이럴떄 export시 toRefs(status)로 감싸주면 안에 값들이 ref변수로 변경된다. 
 
@@ -402,3 +402,103 @@ main.js에서 router처럼 사용하게 설정
 import router from './router'; //index.js생략가능하데
 import store from '@/store/index'
 createApp(App).use(store).use(router).mount('#app')
+
+--> 이후 관리한 state값을 저장 여기서는 Toast.js에서 관리되는값으로 설정
+import { createStore } from "vuex";
+
+export default createStore({
+    state: {
+        saveResult : false,
+        savedMessage :'',
+        timeout :null,
+        type :'success',
+    }
+})
+
+import { useStore } from "vuex";  --> vuex사용
+export const useToast = () =>{
+    const store = useStore();  
+    const saveResult= computed(() => store.state.saveResult); 그냥 값만 사용하면 vuex에서 값이 변경되었을때 감지하지 못하므로 computed로 감싸줌
+    const savedMessage =computed(() => store.state.savedMessage);
+    const timeout = computed(() => store.state.timeout);
+    const type = computed(() => store.state.type);
+
+이후 이벤트로 일어난 결과로 triggerToastResult함수를 호출하면 Toast를 보여주기위해 위의 값들을
+변경해줘야하는데 Taost.js에서 vuex가 관리하는 값들을 변경해야한다. 그방법이 바로
+
+*mutations/actions
+mutations은 vuex의 state를 변경하게 해주는 방법 무조건 동기적으로 작동해야한다.
+
+actions 는 vuex에서 사용하는 함수이며 이것을통해 vuex의 state를 변경해서는안되고 actions에서 mutations를
+호출해서 변경해야한다. actions는 비동기적으로 작업이 가능하다
+
+vuex에서 mutations를 통해 state를 관리하고 actions를 통해 mutations의 state값을 변경
+export default createStore({
+    state: {
+        savedMessage :'',
+        saveResult : false,
+        timeout :null,
+        type :'success'
+    },
+    mutations : {
+        UPDATE_SAVED_MESSAGE (state,payload){
+            state.savedMessage = payload;
+        },
+        UPDATE_SAVED_RESULT(state,payload){
+            state.saveResult = payload;
+        },
+        UPDATE_TOAST_TYPE(state,payload){
+            state.type = payload;
+        },
+        UPDATE_TOAST_TIMEOUT(state,payload){
+            state.timeout = payload;
+        }
+    },
+    actions : {
+        triggerToastResult (context,status) {
+            context.commit('UPDATE_SAVED_RESULT',true);
+            if(status == 200 || status == 201){
+                context.commit('UPDATE_SAVED_MESSAGE','save successed');
+                context.commit('UPDATE_TOAST_TYPE','success');
+              
+            }else{
+                context.commit('UPDATE_SAVED_MESSAGE','save fail');
+                context.commit('UPDATE_TOAST_TYPE','danger');
+            }
+            const timeout = setTimeout(() => {
+                        context.commit('UPDATE_SAVED_RESULT',false);
+                        context.commit('UPDATE_SAVED_MESSAGE','');
+                    }, 5000);
+            context('UPDATE_TOAST_TIMEOUT',timeout);
+        }
+    },
+    getters : {  //vuex에서 사용하는 computed
+        toastMessageWithSmile (state) {
+            return state.savedMessage + '^^';
+        }
+    }
+})
+
+이 vuex를 사용하는 곳
+
+const triggerToastResult = (resStatus) => {
+        store.dispatch('triggerToastResult',resStatus); vuex의 actions호출
+
+    }
+
+
+    *vuex monules
+    사이트가커져 state가 많아질경우 기능별로 구분하는것
+    modules폴더를 생성  하위에 모든 state를 모으는 index.js생성
+    modules폴더 하위에 기능별로 구분하는 폴더생성 여기선 toast
+    하위에 toast기능을 하는 index.js만들어서 export
+    이것들은 한데 모아 modules폴더하위 index.js에 import 이후 이 js파일을 최종 vuex에서 사용하기
+
+    *transition-group
+    에서 사용했던것 예제 해보기... 
+    transition은 한개의 dom에 대해서 작동 여러개의 dom에서 작동하게 하려면 trasition-group을 사용한다. 
+    
+
+    * navbar/Pagination컴포넌트로 추출해보기
+
+    *

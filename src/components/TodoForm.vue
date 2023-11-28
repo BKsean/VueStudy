@@ -35,20 +35,16 @@
         <button type="" class="btn btn-outline-dark ml-2" @click="movoToTodoList"> cancel</button>          
     </form>
     <br/>
-    <transition name="fade">
-        <Toast v-if="saveResult" :message="savedMessage" :type="type" />
-    </transition>
+    
     
 </template>
 
 <script>
 import { useRoute } from 'vue-router';
-//import axios from 'axios';
 import axios from '@/axios';
 import { ref, computed, onBeforeMount,onMounted,onBeforeUpdate,onUpdated,onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import _ from 'lodash';
-import Toast from '@/components/Toast.vue'
 import { useToast } from '@/composables/toast'
 import Input from '@/components/Input.vue'
     export default{
@@ -59,8 +55,7 @@ import Input from '@/components/Input.vue'
             },
         },
         components:{
-            Toast,
-            Input
+                       Input
         },
         setup(props){
             const router = useRouter();
@@ -72,11 +67,8 @@ import Input from '@/components/Input.vue'
             const originalTodo = ref(null);
             const route = useRoute();
             const loading = ref(false);
-                       const subjectError = ref('');        
+            const subjectError = ref('');        
             const {
-                saveResult,
-                savedMessage,
-                type,
                 triggerToastResult,
                 triggerToastError
                 } = useToast();
@@ -133,7 +125,6 @@ import Input from '@/components/Input.vue'
                 try {
                     let res;
                     subjectError.value = '';
-                    console.log(todo.value.subject.trim());
                     if(!todo.value.subject.trim()){
                         subjectError.value = 'subject is empty';
                         return;
@@ -154,7 +145,7 @@ import Input from '@/components/Input.vue'
                         todo.value.subject = '';
                         todo.value.body = '';
                     }
-                    
+                    movoToTodoList();
                 } catch (error) {
                     console.log(error);
                     triggerToastError(error.message);
@@ -174,9 +165,6 @@ import Input from '@/components/Input.vue'
             movoToTodoList,
             onSaveTodo,
             todoUpdated,
-            saveResult,
-            savedMessage,
-            type,
             subjectError,
             
         }    
@@ -191,18 +179,5 @@ import Input from '@/components/Input.vue'
     .text-red{
         color:red;
     }
-    .fade-enter-active,
-    .fade-leave-active{
-        transition: opacity 0.5s ease;
-    }
-
-    .fade-enter-from,
-    .fade-leave-to{
-        opacity: 0;
-    }
-
-    .fade-enter-from,
-    .fade-leave-from{
-        opacity: 1;
-    }
+    
 </style>
